@@ -15,7 +15,7 @@ app.get("/", (req, res) => {
 })
 
 const db = require("./models")
-db.sequelize.sync({force: true}).then(() => {
+db.sequelize.sync({alter: true}).then(() => {
     console.log("Sync db.")
 }).catch((err) => {
     console.log("Failed to sync db: " + err.message)

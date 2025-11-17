@@ -1,5 +1,5 @@
 module.exports = {
-        HOST: "mysql.agh.edu",
+        HOST: "mysql.agh.edu.pl",
         USER: "lesterli",
         PASSWORD: "ZNSm4NbtWo0bbo5t",
         DB: "lesterli",
