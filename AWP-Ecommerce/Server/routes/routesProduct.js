@@ -1,9 +1,11 @@
 module.exports = function(app) {
 
     var products = require("../controllers/productController.js")
+    var cart = require("../controllers/cartController.js")
 
-    app.post("/products", products.create)
     app.get("/products", products.findAll)
-    app.get("/productsById", products.findByPk)
-    app.delete("/products", products.destroy)
+    app.get("/products/:category", products.findByCat) //Only triggered if dropdown is other than -
+    app.get("/cart", cart.findAll)
+    app.delete("/cart", cart.destroy)
+    app.put("/cart", cart.create)
 }

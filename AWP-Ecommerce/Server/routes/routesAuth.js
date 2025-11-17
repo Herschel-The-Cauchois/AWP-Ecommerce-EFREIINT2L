@@ -6,6 +6,6 @@ module.exports = function(app) {
         res.json({message: "Hello EFREI student - your server is on line"})
     })
 
-    app.post("/auth", user.create) //Log in method to be placed
-    app.post("/users", user.create)
+    app.post("/users", user.logIn)
+    app.put("/users", user.create)
 }

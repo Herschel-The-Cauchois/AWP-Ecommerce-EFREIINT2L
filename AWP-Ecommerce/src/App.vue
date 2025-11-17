@@ -16,8 +16,10 @@ import HelloWorld from './components/HelloWorld.vue'
   </div>
   <HelloWorld msg="Vite + Vue" />
 
+  <!-- Onclick or on change use fetch to re-retrieve data, can be modeled with other HTTP requests -->
+
   <!-- Insert Footer component -->
-   
+
 </template>
 
 <style scoped>

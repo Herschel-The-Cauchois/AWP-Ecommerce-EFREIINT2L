@@ -18,6 +18,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         rating: {
             type: Sequelize.FLOAT
+        },
+        imgurl: {
+            type: Sequelize.STRING
         }
     })
 

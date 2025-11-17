@@ -16,7 +16,10 @@ module.exports = (sequelize, Sequelize) => {
         password: {
             type: Sequelize.STRING
         },
-    })
+        isAdmin: {
+            type: Sequelize.BOOLEAN
+        }
+    }) //Cart will be fetched and put in vue app state
 
     return User
 }

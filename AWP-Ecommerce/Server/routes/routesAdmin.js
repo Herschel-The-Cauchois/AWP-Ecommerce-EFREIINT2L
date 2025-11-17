@@ -1,10 +1,11 @@
 module.exports = function(app) {
 
     var user = require("../controllers/userController.js")
-    var product = require("../controllers/productController.js")
+    var products = require("../controllers/productController.js")
 
     app.get("/users", user.findAll)
-    app.patch("/users", user.create) //Should create ban method
+    app.patch("/users", user.ban)
     app.delete("/users", user.destroy)
-    //do the same with products
+    app.delete("/products", products.destroy)
+    app.post("/products", products.create)
 }
