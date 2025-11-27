@@ -13,6 +13,12 @@ module.exports = (sequelize, Sequelize) => {
         description: {
             type: Sequelize.STRING
         },
+        start: {
+            type: Sequelize.DATE
+        },
+        end: {
+            type: Sequelize.DATE
+        },
         price: {
             type: Sequelize.FLOAT
         },

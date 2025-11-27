@@ -1,4 +1,5 @@
 <script setup>
+import { RouterLink } from 'vue-router';
 import HelloWorld from './components/HelloWorld.vue'
 </script>
 
@@ -15,6 +16,14 @@ import HelloWorld from './components/HelloWorld.vue'
     </a>
   </div>
   <HelloWorld msg="Vite + Vue" />
+
+  <nav>
+    <RouterLink to="/log-in" id="log-in-link">Log In</RouterLink> | <RouterLink to="/sign-up">Sign Up</RouterLink>
+    <RouterView/>
+  </nav>
+  <!-- Every view component will be rendered between above h2 and below default vue template, for reference + id will be kept as html tag -->
+
+  <h2>Secret message that i want below every view...</h2>
 
   <!-- Onclick or on change use fetch to re-retrieve data, can be modeled with other HTTP requests -->
 
