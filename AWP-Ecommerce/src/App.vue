@@ -19,8 +19,9 @@ import HelloWorld from './components/HelloWorld.vue'
 
   <nav>
     <RouterLink to="/log-in" id="log-in-link">Log In</RouterLink> | <RouterLink to="/sign-up">Sign Up</RouterLink>
-    <RouterView/>
   </nav>
+
+  <RouterView/> <!-- This tag indicates the spot where each view will be rendered -->
   <!-- Every view component will be rendered between above h2 and below default vue template, for reference + id will be kept as html tag -->
 
   <h2>Secret message that i want below every view...</h2>
