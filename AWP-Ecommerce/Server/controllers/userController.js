@@ -7,6 +7,7 @@ const Op = db.Sequelize.Op
 var jwt = require("jsonwebtoken")
 var bcrypt = require("bcryptjs")
 
+
 exports.create = (req, res) => {
     User.create({
         username: req.body.username,
@@ -77,11 +78,29 @@ exports.logIn = (req, res) => {
     })
 }
 
-exports.findAll = (req, res) => {
-    res.json({message : "This is a findAll test response"})
+exports.fetch = (req, res) => {
+    if (req.body === undefined) {
+        return res.status(401).send({ message : "No credentials found." })
+    }
+    if (req.body.token === undefined) {
+        return res.status(401).send({ message : "No valid credentials found." })
+    }
+    jwt.verify(req.body.token, config.secret, (err, decoded) => { 
+        if (err) { 
+          return res.status(401).send({ 
+            message: "Unauthorized." 
+          }); 
+        } 
+        if (decoded.isAdmin === undefined | decoded.isAdmin == 0) {
+            return res.status(403).send({ message : "You are not allowed to access the list of users." })
+        }
+        User.findAll({ attributes: ['id', 'username', 'email', 'isBanned', 'createdAt'] }).then( users => {
+            return res.status(200).send({ message: "List of users", data: users})
+        })
+    })
 }
 
-exports.findByPk = (req, res) => {
+exports.grantOrDemote = (req, res) => {
     res.json({message : "This is a findOne test response"})
 }
 
@@ -89,6 +108,6 @@ exports.ban = (req, res) => {
     res.json({message : "This is a ban test response"})
 }
 
-exports.destroy = (req, res) => {
+exports.delete = (req, res) => {
     res.json({message : "This is a delete test response"})
 }
