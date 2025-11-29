@@ -15,8 +15,24 @@ app.get("/", (req, res) => {
 })
 
 const db = require("./models")
-db.sequelize.sync({alter: true}).then(() => {
+db.sequelize.sync({alter: true}).then(() => { //Keeps former db data
     console.log("Sync db.")
+    db.role.findOne({ where: { id: 1 }}).then(role => { //Checks if roles are already in db, else creates them
+        if (!role) {
+            db.role.create({
+                id: 1,
+                name: "user"
+            })
+        }
+    })
+    db.role.findOne({ where: { id: 2 }}).then(role => {
+        if (!role) {
+            db.role.create({
+                id: 2,
+                name: "admin"
+            })
+        }
+    })
 }).catch((err) => {
     console.log("Failed to sync db: " + err.message)
 })
