@@ -21,11 +21,13 @@
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router'
 import axios from 'axios'
 import { ref } from 'vue'
 
 const username = defineModel('username')
 const password = defineModel('password')
+const router = useRouter()
 
 const InternalError = ref(false)
 const Forbidden = ref(false)
@@ -53,7 +55,9 @@ function tryLog() {
         url: "http://localhost:5000/users",
         data: { username: username.value, password: password.value},
     }).then(res => {
-        console.log(res); //TODO : handle following status code rendering response on form + local storage of token
+        console.log(res.data); //TODO : handle following status code rendering response on form + local storage of token
+        localStorage.setItem("user", res.data.accessToken)
+        router.push("/main")
     }).catch (err => {
         console.error(err);
         console.log(err.response.data)
@@ -106,6 +110,7 @@ input[type=submit] {
   border-radius: 8px;
   cursor: pointer;
   transition: 0.25s ease;
+  margin-top: 1rem;
 }
 
 input[type=submit]:hover {

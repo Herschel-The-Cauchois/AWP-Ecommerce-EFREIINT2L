@@ -1,6 +1,15 @@
 <script setup>
 import { RouterLink } from 'vue-router';
 import HelloWorld from './components/HelloWorld.vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+
+function LogOut() {
+  if (localStorage.getItem('user') != null) {
+    localStorage.removeItem("user")
+    router.push("main")
+  }
+}
 </script>
 
 <template>
@@ -18,7 +27,7 @@ import HelloWorld from './components/HelloWorld.vue'
   <HelloWorld msg="Vite + Vue" />
 
   <nav>
-    <RouterLink to="/log-in" id="log-in-link">Log In</RouterLink> | <RouterLink to="/sign-up">Sign Up</RouterLink>
+    <RouterLink to="/log-in" id="log-in-link">Log In</RouterLink> | <RouterLink to="/sign-up">Sign Up</RouterLink> | <button @click="LogOut">Log Out</button>
   </nav>
 
   <RouterView/> <!-- This tag indicates the spot where each view will be rendered -->
