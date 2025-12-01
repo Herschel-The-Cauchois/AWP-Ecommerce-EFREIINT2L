@@ -101,13 +101,159 @@ exports.fetch = (req, res) => {
 }
 
 exports.grantOrDemote = (req, res) => {
-    res.json({message : "This is a findOne test response"})
+    if (req.body === undefined) {
+        return res.status(400).send({ message : "Empty request body." })
+    }
+    if (req.body.token === undefined) {
+        return res.status(401).send({ message : "No valid credentials found." })
+    }
+    if (req.body.user === undefined | req.body.grant === undefined) {
+        return res.status(400).send({ message : "Missing request parameters." })
+    }
+    jwt.verify(req.body.token, config.secret, (err, decoded) => { 
+        if (err) { 
+          return res.status(401).send({ 
+            message: "Unauthorized." 
+          }); 
+        } 
+        if (decoded.isAdmin === undefined | decoded.isAdmin == 0) {
+            return res.status(403).send({ message : "You are not allowed to perform privilege modification." })
+        }
+        User.findOne({ attributes: ['id', 'isBanned'], where: {
+            [Op.and]: [{id: req.body.user}, {isBanned: 0}] //Prerequisite of privilege modification is user to not be banned, else will not perform operation
+        }}).then( user => {
+            if (!user) {
+                return res.status(404).send({ message : "User not found." })
+            }
+            if (req.body.grant) {
+                user.setRoles([2]).then(() => {
+                    return res.status(200).send({ message : "User has been granted administrative privileges." })
+                }).catch(err => {
+                    return res.status(500).send({ message: "Exception has occurred during privilege update : " + err.message })
+                })
+            } else {
+                user.setRoles([1]).then(() => {
+                    return res.status(200).send({ message : "User has been demoted to user privileges." })
+                }).catch(err => {
+                    return res.status(500).send({ message: "Exception has occurred during privilege update : " + err.message })
+                })
+            }
+        }).catch(err => {
+            return res.status(500).send({ message: "Exception has occurred during user fetching : " + err.message })
+        })
+    })
 }
 
 exports.ban = (req, res) => {
-    res.json({message : "This is a ban test response"})
+    if (req.body === undefined) {
+        return res.status(400).send({ message : "Empty request body." })
+    }
+    if (req.body.token === undefined) {
+        return res.status(401).send({ message : "No valid credentials found." })
+    }
+    if (req.body.user === undefined) {
+        return res.status(400).send({ message : "Missing user parameter." })
+    }
+    jwt.verify(req.body.token, config.secret, (err, decoded) => { 
+        if (err) { 
+          return res.status(401).send({ 
+            message: "Unauthorized." 
+          }); 
+        } 
+        if (decoded.isAdmin === undefined | decoded.isAdmin == 0) {
+            return res.status(403).send({ message : "You are not allowed to perform access modification." })
+        }
+        User.findOne({ attributes: ['id', 'isBanned'], where: {
+            [Op.and]: [{id: req.body.user}, {isBanned: 0}]
+        }}).then( user => {
+            if (!user) {
+                return res.status(404).send({ message : "User not found." })
+            }
+            User.update({ "isBanned": 1 }, { where: {
+                id: user.id
+            }}).then(() => {
+                return res.status(200).send({ message : "User banned." })
+            }).catch((err) => {
+                return res.status(500).send({ message: "Banishment failed : " + err.message })
+            })
+        }).catch(err => {
+            return res.status(500).send({ message: "Exception has occurred during user fetching : " + err.message })
+        })
+    })
 }
 
-exports.delete = (req, res) => {
-    res.json({message : "This is a delete test response"})
+exports.unban = (req, res) => {
+    if (req.body === undefined) {
+        return res.status(400).send({ message : "Empty request body." })
+    }
+    if (req.body.token === undefined) {
+        return res.status(401).send({ message : "No valid credentials found." })
+    }
+    if (req.body.user === undefined) {
+        return res.status(400).send({ message : "Missing user parameter." })
+    }
+    jwt.verify(req.body.token, config.secret, (err, decoded) => { 
+        if (err) { 
+          return res.status(401).send({ 
+            message: "Unauthorized." 
+          }); 
+        } 
+        if (decoded.isAdmin === undefined | decoded.isAdmin == 0) {
+            return res.status(403).send({ message : "You are not allowed to perform access modification." })
+        }
+        User.findOne({ attributes: ['id', 'isBanned'], where: {
+            [Op.and]: [{id: req.body.user}, {isBanned: 1}]
+        }}).then( user => {
+            if (!user) {
+                return res.status(404).send({ message : "User not found." })
+            }
+            User.update({ "isBanned": 0 }, { where: {
+                id: user.id
+            }}).then(() => {
+                return res.status(200).send({ message : "User unbanned." })
+            }).catch((err) => {
+                return res.status(500).send({ message: "Debanishment failed : " + err.message })
+            })
+        }).catch(err => {
+            return res.status(500).send({ message: "Exception has occurred during user fetching : " + err.message })
+        })
+    })
+}
+
+exports.delete = (req, res) => { //Frontend wise, SHOULD NOT BE REQUESTED WITHOUT CONFIRMATION ALERT
+    if (req.body === undefined) {
+        return res.status(400).send({ message : "Empty request body." })
+    }
+    if (req.body.token === undefined) {
+        return res.status(401).send({ message : "No valid credentials found." })
+    }
+    if (req.body.user === undefined) {
+        return res.status(400).send({ message : "Missing user parameter." })
+    }
+    jwt.verify(req.body.token, config.secret, (err, decoded) => { 
+        if (err) { 
+          return res.status(401).send({ 
+            message: "Unauthorized." 
+          }); 
+        } 
+        if (decoded.isAdmin === undefined | decoded.isAdmin == 0) {
+            return res.status(403).send({ message : "You are not allowed to perform access modification." })
+        }
+        User.findOne({ attributes: ['id'], where: { id: req.body.user }}).then( user => {
+            if (!user) {
+                return res.status(404).send({ message : "User not found." })
+            }
+            user.setRoles([]).then(() => {
+                    User.destroy({ where: { id: user.id }}).then(() => {
+                        return res.status(200).send({ message : "User deleted." })
+                    }).catch((err) => {
+                        return res.status(500).send({ message: "Deletion failed : " + err.message })
+                    })
+                }).catch(err => {
+                    return res.status(500).send({ message: "Exception has occurred during role removal : " + err.message })
+                })
+        }).catch(err => {
+            return res.status(500).send({ message: "Exception has occurred during user fetching : " + err.message })
+        })
+    })
 }
