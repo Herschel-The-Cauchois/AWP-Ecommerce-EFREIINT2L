@@ -62,7 +62,8 @@ exports.logIn = (req, res) => {
                 authorities.push("ROLE_" + roles[i].name.toUpperCase())
             }
             var isAdmin = (authorities.includes("ROLE_ADMIN")) ? true : false
-            var token = jwt.sign({ id: user.id, username: user.username, isAdmin: isAdmin }, config.secret, {
+            var isProvider = (authorities.includes("ROLE_PROVIDER")) ? true : false
+            var token = jwt.sign({ id: user.id, username: user.username, isAdmin: isAdmin, isProvider: isProvider }, config.secret, {
                 expiresIn: 86400
             })
             res.status(200).send({
@@ -94,7 +95,7 @@ exports.fetch = (req, res) => {
         if (decoded.isAdmin === undefined | decoded.isAdmin == 0) {
             return res.status(403).send({ message : "You are not allowed to access the list of users." })
         }
-        User.findAll({ attributes: ['id', 'username', 'email', 'isBanned', 'createdAt'] }).then( users => {
+        User.findAll({ attributes: ['id', 'username', 'email', 'isBanned', 'createdAt'], where: { id: { [Op.ne]: decoded.id } } }).then( users => { //Clause where forbids access to admin to his own account to prevent problems
             return res.status(200).send({ message: "List of users", data: users})
         })
     })
@@ -143,6 +144,8 @@ exports.grantOrDemote = (req, res) => {
         })
     })
 }
+
+//add adding provider role button
 
 exports.ban = (req, res) => {
     if (req.body === undefined) {
