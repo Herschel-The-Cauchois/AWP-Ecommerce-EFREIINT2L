@@ -7,7 +7,14 @@ const Op = db.Sequelize.Op
 var jwt = require("jsonwebtoken")
 var bcrypt = require("bcryptjs")
 
+
 exports.create = (req, res) => {
+    if (req.body === undefined) {
+        return res.status(400).send({ message : "Empty request body." })
+    }
+    if (req.body.username === undefined | req.body.email === undefined | req.body.password === undefined) {
+        return res.status(400).send({ message : "Missing parameters." })
+    }
     User.create({
         username: req.body.username,
         email: req.body.email,
@@ -23,12 +30,12 @@ exports.create = (req, res) => {
                 }
             }).then(roles => {
                 user.setRoles(roles).then(() => {
-                    res.send({ message: "User registered successfully." })
+                    res.status(200).send({ message: "User registered successfully." })
                 })
             })
         } else {
             user.setRoles([1]).then(() => {
-                res.send({ message: "User registered successfully." })
+                res.status(200).send({ message: "User registered successfully." })
             })
         }
     }).catch(err => {
@@ -61,7 +68,8 @@ exports.logIn = (req, res) => {
                 authorities.push("ROLE_" + roles[i].name.toUpperCase())
             }
             var isAdmin = (authorities.includes("ROLE_ADMIN")) ? true : false
-            var token = jwt.sign({ id: user.id, username: user.username, isAdmin: isAdmin }, config.secret, {
+            var isProvider = (authorities.includes("ROLE_PROVIDER")) ? true : false
+            var token = jwt.sign({ id: user.id, username: user.username, isAdmin: isAdmin, isProvider: isProvider }, config.secret, {
                 expiresIn: 86400
             })
             res.status(200).send({
@@ -77,18 +85,227 @@ exports.logIn = (req, res) => {
     })
 }
 
-exports.findAll = (req, res) => {
-    res.json({message : "This is a findAll test response"})
+exports.fetch = (req, res) => {
+    if (req.body === undefined) {
+        return res.status(401).send({ message : "No credentials found." })
+    }
+    if (req.body.token === undefined) {
+        return res.status(401).send({ message : "No valid credentials found." })
+    }
+    jwt.verify(req.body.token, config.secret, (err, decoded) => { 
+        if (err) { 
+          return res.status(401).send({ 
+            message: "Unauthorized." 
+          }); 
+        } 
+        if (decoded.isAdmin === undefined | decoded.isAdmin == 0) {
+            return res.status(403).send({ message : "You are not allowed to access the list of users." })
+        }
+        User.findAll({ attributes: ['id', 'username', 'email', 'isBanned', 'createdAt'], where: { id: { [Op.ne]: decoded.id } } }).then( users => { //Clause where forbids access to admin to his own account to prevent problems
+            return res.status(200).send({ message: "List of users", data: users})
+        })
+    })
 }
 
-exports.findByPk = (req, res) => {
-    res.json({message : "This is a findOne test response"})
+exports.grantOrDemote = (req, res) => {
+    if (req.body === undefined) {
+        return res.status(400).send({ message : "Empty request body." })
+    }
+    if (req.body.token === undefined) {
+        return res.status(401).send({ message : "No valid credentials found." })
+    }
+    if (req.body.user === undefined | req.body.grant === undefined) {
+        return res.status(400).send({ message : "Missing request parameters." })
+    }
+    jwt.verify(req.body.token, config.secret, (err, decoded) => { 
+        if (err) { 
+          return res.status(401).send({ 
+            message: "Unauthorized." 
+          }); 
+        } 
+        if (decoded.isAdmin === undefined | decoded.isAdmin == 0) {
+            return res.status(403).send({ message : "You are not allowed to perform privilege modification." })
+        }
+        User.findOne({ attributes: ['id', 'isBanned'], where: {
+            [Op.and]: [{id: req.body.user}, {isBanned: 0}] //Prerequisite of privilege modification is user to not be banned, else will not perform operation
+        }}).then( user => {
+            if (!user) {
+                return res.status(404).send({ message : "User not found." })
+            }
+            if (req.body.grant) {
+                user.setRoles([2]).then(() => {
+                    return res.status(200).send({ message : "User has been granted administrative privileges." })
+                }).catch(err => {
+                    return res.status(500).send({ message: "Exception has occurred during privilege update : " + err.message })
+                })
+            } else {
+                user.setRoles([1]).then(() => {
+                    return res.status(200).send({ message : "User has been demoted to user privileges." })
+                }).catch(err => {
+                    return res.status(500).send({ message: "Exception has occurred during privilege update : " + err.message })
+                })
+            }
+        }).catch(err => {
+            return res.status(500).send({ message: "Exception has occurred during user fetching : " + err.message })
+        })
+    })
+}
+
+//add adding provider role button
+exports.provideOrNot = (req, res) => {
+    if (req.body === undefined) {
+        return res.status(400).send({ message : "Empty request body." })
+    }
+    if (req.body.token === undefined) {
+        return res.status(401).send({ message : "No valid credentials found." })
+    }
+    if (req.body.user === undefined | req.body.grant === undefined) {
+        return res.status(400).send({ message : "Missing request parameters." })
+    }
+    jwt.verify(req.body.token, config.secret, (err, decoded) => { 
+        if (err) { 
+          return res.status(401).send({ 
+            message: "Unauthorized." 
+          }); 
+        } 
+        if (decoded.isAdmin === undefined | decoded.isAdmin == 0) {
+            return res.status(403).send({ message : "You are not allowed to perform privilege modification." })
+        }
+        User.findOne({ attributes: ['id', 'isBanned'], where: {
+            [Op.and]: [{id: req.body.user}, {isBanned: 0}] //Prerequisite of privilege modification is user to not be banned, else will not perform operation
+        }}).then( user => {
+            if (!user) {
+                return res.status(404).send({ message : "User not found." })
+            }
+            if (req.body.grant) {
+                user.setRoles([3]).then(() => {
+                    return res.status(200).send({ message : "User has been granted provider rights." })
+                }).catch(err => {
+                    return res.status(500).send({ message: "Exception has occurred during privilege update : " + err.message })
+                })
+            } else {
+                user.setRoles([1]).then(() => {
+                    return res.status(200).send({ message : "User has been removed provider rights." })
+                }).catch(err => {
+                    return res.status(500).send({ message: "Exception has occurred during privilege update : " + err.message })
+                })
+            }
+        }).catch(err => {
+            return res.status(500).send({ message: "Exception has occurred during user fetching : " + err.message })
+        })
+    })
 }
 
 exports.ban = (req, res) => {
-    res.json({message : "This is a ban test response"})
+    if (req.body === undefined) {
+        return res.status(400).send({ message : "Empty request body." })
+    }
+    if (req.body.token === undefined) {
+        return res.status(401).send({ message : "No valid credentials found." })
+    }
+    if (req.body.user === undefined) {
+        return res.status(400).send({ message : "Missing user parameter." })
+    }
+    jwt.verify(req.body.token, config.secret, (err, decoded) => { 
+        if (err) { 
+          return res.status(401).send({ 
+            message: "Unauthorized." 
+          }); 
+        } 
+        if (decoded.isAdmin === undefined | decoded.isAdmin == 0) {
+            return res.status(403).send({ message : "You are not allowed to perform access modification." })
+        }
+        User.findOne({ attributes: ['id', 'isBanned'], where: {
+            [Op.and]: [{id: req.body.user}, {isBanned: 0}]
+        }}).then( user => {
+            if (!user) {
+                return res.status(404).send({ message : "User not found." })
+            }
+            User.update({ "isBanned": 1 }, { where: {
+                id: user.id
+            }}).then(() => {
+                return res.status(200).send({ message : "User banned." })
+            }).catch((err) => {
+                return res.status(500).send({ message: "Banishment failed : " + err.message })
+            })
+        }).catch(err => {
+            return res.status(500).send({ message: "Exception has occurred during user fetching : " + err.message })
+        })
+    })
 }
 
-exports.destroy = (req, res) => {
-    res.json({message : "This is a delete test response"})
+exports.unban = (req, res) => {
+    if (req.body === undefined) {
+        return res.status(400).send({ message : "Empty request body." })
+    }
+    if (req.body.token === undefined) {
+        return res.status(401).send({ message : "No valid credentials found." })
+    }
+    if (req.body.user === undefined) {
+        return res.status(400).send({ message : "Missing user parameter." })
+    }
+    jwt.verify(req.body.token, config.secret, (err, decoded) => { 
+        if (err) { 
+          return res.status(401).send({ 
+            message: "Unauthorized." 
+          }); 
+        } 
+        if (decoded.isAdmin === undefined | decoded.isAdmin == 0) {
+            return res.status(403).send({ message : "You are not allowed to perform access modification." })
+        }
+        User.findOne({ attributes: ['id', 'isBanned'], where: {
+            [Op.and]: [{id: req.body.user}, {isBanned: 1}]
+        }}).then( user => {
+            if (!user) {
+                return res.status(404).send({ message : "User not found." })
+            }
+            User.update({ "isBanned": 0 }, { where: {
+                id: user.id
+            }}).then(() => {
+                return res.status(200).send({ message : "User unbanned." })
+            }).catch((err) => {
+                return res.status(500).send({ message: "Debanishment failed : " + err.message })
+            })
+        }).catch(err => {
+            return res.status(500).send({ message: "Exception has occurred during user fetching : " + err.message })
+        })
+    })
+}
+
+exports.delete = (req, res) => { //Frontend wise, SHOULD NOT BE REQUESTED WITHOUT CONFIRMATION ALERT
+    if (req.body === undefined) {
+        return res.status(400).send({ message : "Empty request body." })
+    }
+    if (req.body.token === undefined) {
+        return res.status(401).send({ message : "No valid credentials found." })
+    }
+    if (req.body.user === undefined) {
+        return res.status(400).send({ message : "Missing user parameter." })
+    }
+    jwt.verify(req.body.token, config.secret, (err, decoded) => { 
+        if (err) { 
+          return res.status(401).send({ 
+            message: "Unauthorized." 
+          }); 
+        } 
+        if (decoded.isAdmin === undefined | decoded.isAdmin == 0) {
+            return res.status(403).send({ message : "You are not allowed to perform access modification." })
+        }
+        User.findOne({ attributes: ['id'], where: { id: req.body.user }}).then( user => {
+            if (!user) {
+                return res.status(404).send({ message : "User not found." })
+            }
+            user.setRoles([]).then(() => {
+                    User.destroy({ where: { id: user.id }}).then(() => {
+                        return res.status(200).send({ message : "User deleted." })
+                    }).catch((err) => {
+                        return res.status(500).send({ message: "Deletion failed : " + err.message })
+                    })
+                }).catch(err => {
+                    return res.status(500).send({ message: "Exception has occurred during role removal : " + err.message })
+                })
+        }).catch(err => {
+            return res.status(500).send({ message: "Exception has occurred during user fetching : " + err.message })
+        })
+    })
 }

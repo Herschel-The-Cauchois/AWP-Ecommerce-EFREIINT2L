@@ -37,6 +37,17 @@ db.user.belongsToMany(db.role, {
     otherKey: "roleId"
 })
 
-db.ROLES = ["user", "admin"]
+db.product.belongsToMany(db.user, {
+    through: db.cart,
+    foreignKey: "product",
+    otherKey: "user"
+})
+db.user.belongsToMany(db.product, {
+    through: db.cart,
+    foreignKey: "user",
+    otherKey: "product"
+}) //Specify user-cart relationships
+
+db.ROLES = ["user", "admin", "provider"] //provider can book events AND propose others
 
 module.exports = db

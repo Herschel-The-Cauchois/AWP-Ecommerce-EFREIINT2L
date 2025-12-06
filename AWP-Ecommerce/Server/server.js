@@ -33,6 +33,14 @@ db.sequelize.sync({alter: true}).then(() => { //Keeps former db data
             })
         }
     })
+    db.role.findOne({ where: { id: 3 }}).then(role => {
+        if (!role) {
+            db.role.create({
+                id: 3,
+                name: "provider"
+            })
+        }
+    })
 }).catch((err) => {
     console.log("Failed to sync db: " + err.message)
 })

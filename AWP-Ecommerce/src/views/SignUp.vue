@@ -75,7 +75,7 @@ function trySign() {
         url: "http://localhost:5000/users",
         data: { username: username.value, password: password.value, email: email.value},
     }).then(res => {
-        console.log(res.data); //TODO : handle following status code rendering response on form + local storage of token
+        console.log(res.data); 
         router.push("/log-in")
     }).catch (err => {
         console.error(err);
