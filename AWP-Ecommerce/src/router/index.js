@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LogInView from '../views/LogIn.vue'
 import SignUpView from '../views/SignUp.vue'
 import MainView from '../views/Main.vue'
+import NewProductView from '../views/NewProduct.vue'
 
 import VueJwtDecode from 'vue-jwt-decode'
 
@@ -44,6 +45,26 @@ const routes = [
             requiresAuth : false,
             is_admin: false,
             is_provider: false
+        }
+    },
+    {
+        path: "/provider-dashboard",
+        name: "provider-dashboard",
+        component: SignUpView, //To replace with provider dashboard vue when done
+        meta: {
+            requiresAuth : true,
+            is_admin: false,
+            is_provider: true
+        }
+    },
+    {
+        path: "/new",
+        name: "new",
+        component: NewProductView,
+        meta: {
+            requiresAuth : true,
+            is_admin: false,
+            is_provider: true
         }
     }
 ]
