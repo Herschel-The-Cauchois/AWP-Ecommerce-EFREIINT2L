@@ -53,7 +53,7 @@ router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth)) { 
         if (localStorage.getItem('user') == null) { 
             next({ 
-                path: '/login', 
+                path: '/log-in', 
                 params: { nextUrl: to.fullPath } 
             }) 
         } else { 
@@ -68,6 +68,15 @@ router.beforeEach((to, from, next) => {
             } else { 
                 next() 
             } 
+            if (to.matched.some(record => record.meta.is_provider)) { // Is admin page ?
+                if (user.isProvider) { // If user token states he's an admin, go forth
+                    next() 
+                } else { 
+                    next({ name: 'main' }) //Ideally would be cool to add a "acces forbidden page..."
+                } 
+            } else { 
+                next() 
+            }
         } 
     } else { 
         next() 

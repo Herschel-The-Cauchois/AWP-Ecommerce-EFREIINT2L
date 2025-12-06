@@ -9,6 +9,12 @@ var bcrypt = require("bcryptjs")
 
 
 exports.create = (req, res) => {
+    if (req.body === undefined) {
+        return res.status(400).send({ message : "Empty request body." })
+    }
+    if (req.body.username === undefined | req.body.email === undefined | req.body.password === undefined) {
+        return res.status(400).send({ message : "Missing parameters." })
+    }
     User.create({
         username: req.body.username,
         email: req.body.email,
@@ -146,6 +152,49 @@ exports.grantOrDemote = (req, res) => {
 }
 
 //add adding provider role button
+exports.provideOrNot = (req, res) => {
+    if (req.body === undefined) {
+        return res.status(400).send({ message : "Empty request body." })
+    }
+    if (req.body.token === undefined) {
+        return res.status(401).send({ message : "No valid credentials found." })
+    }
+    if (req.body.user === undefined | req.body.grant === undefined) {
+        return res.status(400).send({ message : "Missing request parameters." })
+    }
+    jwt.verify(req.body.token, config.secret, (err, decoded) => { 
+        if (err) { 
+          return res.status(401).send({ 
+            message: "Unauthorized." 
+          }); 
+        } 
+        if (decoded.isAdmin === undefined | decoded.isAdmin == 0) {
+            return res.status(403).send({ message : "You are not allowed to perform privilege modification." })
+        }
+        User.findOne({ attributes: ['id', 'isBanned'], where: {
+            [Op.and]: [{id: req.body.user}, {isBanned: 0}] //Prerequisite of privilege modification is user to not be banned, else will not perform operation
+        }}).then( user => {
+            if (!user) {
+                return res.status(404).send({ message : "User not found." })
+            }
+            if (req.body.grant) {
+                user.setRoles([3]).then(() => {
+                    return res.status(200).send({ message : "User has been granted provider rights." })
+                }).catch(err => {
+                    return res.status(500).send({ message: "Exception has occurred during privilege update : " + err.message })
+                })
+            } else {
+                user.setRoles([1]).then(() => {
+                    return res.status(200).send({ message : "User has been removed provider rights." })
+                }).catch(err => {
+                    return res.status(500).send({ message: "Exception has occurred during privilege update : " + err.message })
+                })
+            }
+        }).catch(err => {
+            return res.status(500).send({ message: "Exception has occurred during user fetching : " + err.message })
+        })
+    })
+}
 
 exports.ban = (req, res) => {
     if (req.body === undefined) {
