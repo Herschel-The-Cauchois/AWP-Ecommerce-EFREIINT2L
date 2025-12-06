@@ -13,6 +13,7 @@ const routes = [
         meta: {
             requiresAuth : false,
             is_admin: false,
+            is_provider: false
         }
     },
     {
@@ -22,6 +23,7 @@ const routes = [
         meta: {
             requiresAuth : false,
             is_admin: false,
+            is_provider: false,
         }
     },
     {
@@ -31,6 +33,7 @@ const routes = [
         meta: {
             requiresAuth : false,
             is_admin: false,
+            is_provider: false
         }
     }, 
     {
@@ -40,6 +43,7 @@ const routes = [
         meta: {
             requiresAuth : false,
             is_admin: false,
+            is_provider: false
         }
     }
 ]
@@ -68,7 +72,7 @@ router.beforeEach((to, from, next) => {
             } else { 
                 next() 
             } 
-            if (to.matched.some(record => record.meta.is_provider)) { // Is admin page ?
+            if (to.matched.some(record => record.meta.is_provider)) { // Is provider page ?
                 if (user.isProvider) { // If user token states he's an admin, go forth
                     next() 
                 } else { 
