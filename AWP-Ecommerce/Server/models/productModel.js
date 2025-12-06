@@ -27,6 +27,12 @@ module.exports = (sequelize, Sequelize) => {
         },
         imgurl: {
             type: Sequelize.STRING
+        },
+        provider: {
+            type: Sequelize.INTEGER
+        },
+        providerName: {
+            type: Sequelize.STRING
         }
     })
 
