@@ -23,6 +23,7 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import axios from 'axios'
+import VueJwtDecode from 'vue-jwt-decode'
 import { ref } from 'vue'
 
 const username = defineModel('username')
@@ -60,7 +61,9 @@ function tryLog() {
             localStorage.removeItem("user") //Removes token if was already logged in, to prevent simultaneous sessions
         }
         localStorage.setItem("user", res.data.accessToken)
-        router.push("/main")
+	// navigates to `/main` by reloading that page, so that the loggin function is rerun
+	// this is a bit of a hack. it would be better to be able to modify a global variable with the login state and use `router.push("/main")` instead, so as to avoid reloading the page
+	window.location = "/main"
     }).catch (err => {
         console.error(err);
         console.log(err.response.data)

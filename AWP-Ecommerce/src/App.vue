@@ -2,11 +2,31 @@
 import { RouterLink } from 'vue-router';
 import HelloWorld from './components/HelloWorld.vue'
 import { useRouter } from 'vue-router'
+import VueJwtDecode from 'vue-jwt-decode'
+import { defineProps, ref } from 'vue'
+
+const user = ref(null)
 const router = useRouter()
+
+function getUserDetails() {
+	// get token from localstorage
+	let token = localStorage.getItem("user");
+	try {
+		//decode token here and attach to the user object
+		let decoded = VueJwtDecode.decode(token);
+		user.value = decoded;
+		console.log('user is logged in')
+	} catch (error) {
+		// return error in production env
+		console.log(error, 'user is not logged in')
+	}
+}
+getUserDetails()
 
 function LogOut() {
   if (localStorage.getItem('user') != null) {
     localStorage.removeItem("user")
+    user.value = null;
     router.push("main")
   }
 }
@@ -27,7 +47,9 @@ function LogOut() {
   <HelloWorld msg="Vite + Vue" />
 
   <nav>
-    <RouterLink to="/log-in" id="log-in-link">Log In</RouterLink> | <RouterLink to="/sign-up">Sign Up</RouterLink> | <button @click="LogOut">Log Out</button>
+    <RouterLink to="/log-in" id="log-in-link">Log In</RouterLink>
+    | <RouterLink to="/sign-up">Sign Up</RouterLink>
+    | <button v-if="user" @click="LogOut">Log Out</button>
   </nav>
 
   <RouterView/> <!-- This tag indicates the spot where each view will be rendered -->
