@@ -25,7 +25,7 @@ import { useRouter } from 'vue-router'
 import axios from 'axios'
 import VueJwtDecode from 'vue-jwt-decode'
 import { ref } from 'vue'
-import {user_login, getUserDetails} from '../login_info'
+import {user_login, LoadUserLogin} from '../login_info'
 
 const username = defineModel('username')
 const password = defineModel('password')
@@ -62,7 +62,7 @@ function tryLog() {
             localStorage.removeItem("user") //Removes token if was already logged in, to prevent simultaneous sessions
         }
         localStorage.setItem("user", res.data.accessToken)
-	getUserDetails()
+	LoadUserLogin()
 	router.push("/main")
     }).catch (err => {
         console.error(err);

@@ -2,14 +2,19 @@
 import { RouterLink } from 'vue-router';
 import { useRouter } from 'vue-router'
 import { defineProps, ref } from 'vue'
-import {user_login} from './login_info'
+import {user_login, LoadUserLogin, UnloadUserLogin} from './login_info'
+
+LoadUserLogin()
+console.log("showing user_login")
+console.log(user_login.value)
+console.log("end showing user_login")
 
 const router = useRouter()
 
 function LogOut() {
   if (localStorage.getItem('user') != null) {
     localStorage.removeItem("user")
-    user_login.value = null;
+    UnloadUserLogin()
     router.push("main")
   }
 }
@@ -22,7 +27,7 @@ function LogOut() {
   <nav>
     <RouterLink to="/log-in" id="log-in-link">Log In</RouterLink>
     | <RouterLink to="/sign-up">Sign Up</RouterLink>
-    | <button v-if="user_login" @click="LogOut">Log Out</button>
+    | <button v-if="user_login.isLoggedIn" @click="LogOut">Log Out</button>
   </nav>
 
   <RouterView/> <!-- This tag indicates the spot where each view will be rendered -->
