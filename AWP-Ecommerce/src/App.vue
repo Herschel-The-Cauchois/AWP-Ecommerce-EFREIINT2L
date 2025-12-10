@@ -2,6 +2,7 @@
 import { RouterLink } from 'vue-router';
 import { useRouter } from 'vue-router'
 import Header from './components/Header.vue'
+import Footer from './components/Footer.vue'
 import { defineProps, ref } from 'vue'
 import {user_login, LoadUserLogin, UnloadUserLogin} from './login_info'
 
@@ -22,7 +23,7 @@ const router = useRouter()
 
   <!-- Onclick or on change use fetch to re-retrieve data, can be modeled with other HTTP requests -->
 
-  <!-- Insert Footer component -->
+  <Footer />
 
 </template>
 
