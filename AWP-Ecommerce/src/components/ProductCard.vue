@@ -4,18 +4,18 @@
 		<div class="content">
 			<h2>{{ product.name }}</h2>
 			<p>{{ product.description }}</p>
-			<p>Category: {{ product.category }}</p>
+			<p><span class="item">Category :</span> {{ product.category }}</p>
 		</div>
 		<hr />
 		<div class="bottom">
 			<div>
-				<p>start: {{ product.start }}</p>
-				<p>end: {{ product.end }}</p>
+				<p><span class="item">Beginning :</span> {{ product.start.slice(0,10) + " " + product.start.slice(11,16) }}</p>
+				<p><span class="item">End :</span> {{ product.end.slice(0,10) + " " + product.end.slice(11,16) }}</p>
 			</div>
 			<div>
 				<button v-if="user_login.isLoggedIn" @click="console.log('user trying to buy something, we should add to cart')">price: {{ product.price }}$</button>
 				<button v-else="user_login.isLoggedIn" @click="router.push('/log-in')">price: {{ product.price }}$</button>
-				<span>rating: {{ product.rating }}</span>
+				<p class="rating"><span>Rating :</span> {{ product.rating }}/5</p>
 			</div>
 		</div>
 		<!-- <button @click="deleteProduct">Delete</button> -->
@@ -81,4 +81,22 @@
 	transform: scale(1.01);
 	box-shadow: 10px 5px 12px 0 rgba(0, 0, 0, 0.2);
 }
+
+.item {
+	text-decoration: underline;
+	font-weight: 500;
+}
+
+.rating {
+	font-weight: 900;
+	color: gold;
+	font-size: 18px;
+}
+
+hr {
+	border-radius: 4px;
+	background-color: black;
+	padding: 0.2em 0.5em;
+}
+
 </style>
