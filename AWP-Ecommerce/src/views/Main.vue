@@ -1,8 +1,6 @@
 <template>
 	<h1>Products list</h1>
-	<template v-if="user_login">
-		<RouterLink v-if="user_login.isProvider" to="/new" id="new-product-link">Add new Product</RouterLink>
-	</template>
+	<button class="add_product_button"><RouterLink class="add_product_link" v-if="user_login.isProvider" to="/new" id="new-product-link">+ Add new Product</RouterLink></button>
 	<div class="products">
 		<ProductCard v-for="product in products" :key="product.id" :product="product"/>
 	</div>
@@ -60,5 +58,14 @@
 	flex-wrap: wrap;
 	justify-content: space-between;
 	background-color: beige;
+}
+
+.add_product_button {
+	margin: 20px;
+	font-size: 2em;
+	background-color: lightblue;
+}
+.add_product_link {
+	color: #6904ae;
 }
 </style>
