@@ -1,6 +1,7 @@
 <script setup>
 import { RouterLink } from 'vue-router';
 import { useRouter } from 'vue-router'
+import Header from './components/Header.vue'
 import { defineProps, ref } from 'vue'
 import {user_login, LoadUserLogin, UnloadUserLogin} from './login_info'
 
@@ -10,26 +11,11 @@ console.log(user_login.value)
 console.log("end showing user_login")
 
 const router = useRouter()
-
-function LogOut() {
-  if (localStorage.getItem('user') != null) {
-    localStorage.removeItem("user")
-    UnloadUserLogin()
-    router.push("main")
-  }
-}
 </script>
 
 <template>
 
-  <!-- Insert Header component -->
-
-  <nav>
-    <RouterLink to="/main" id="main-link">Home</RouterLink>
-    | <RouterLink to="/log-in" id="log-in-link">Log In</RouterLink>
-    | <RouterLink to="/sign-up">Sign Up</RouterLink>
-    | <button v-if="user_login.isLoggedIn" @click="LogOut">Log Out</button>
-  </nav>
+  <Header />
 
   <RouterView/> <!-- This tag indicates the spot where each view will be rendered -->
   <!-- Every view component will be rendered between above h2 and below default vue template, for reference + id will be kept as html tag -->

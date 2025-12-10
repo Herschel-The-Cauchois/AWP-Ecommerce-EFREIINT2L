@@ -1,5 +1,5 @@
 <template>
-	<h1>Products list</h1>
+	<h2>Products list</h2>
 	<template v-if="user_login">
 		<RouterLink v-if="user_login.isProvider" to="/new" id="new-product-link">Add new Product</RouterLink>
 	</template>
