@@ -47,25 +47,25 @@ exports.create = (req, res) => {
 }
 
 exports.findAll = (req, res) => {
-    if (req.body !== undefined) {
-        if (req.body.providerView !== undefined & req.body.provider !== undefined) {
-            if (req.body.providerView == true) { //For their own dashboard, the providers only have access to their own product.
-                Product.findAll({ where: { provider: req.body.provider}}).then(products => {
-                    return res.status(200).send({ message: "List of products", data: products})
-                }).catch(err => {
-                    return res.status(500).send({ message: err.message })
-                })
-            }
-        } else {
-            return res.status(400).send({ message: "Non-empty body but invalid parameters." })
-        }
-    } else {
-        Product.findAll().then(products => {
-            return res.status(200).send({ message: "List of products", data: products})
-        }).catch(err => {
-            return res.status(500).send({ message: err.message })
-        })
-    }
+	if (req.query.providerView !== undefined & req.query.provider !== undefined) {
+		console.log("answering for a provider")
+		if (req.query.providerView == 'true') { //For their own dashboard, the providers only have access to their own product.
+			Product.findAll({ where: { provider: Number(req.query.provider)}}).then(products => {
+				return res.status(200).send({ message: "List of products", data: products})
+			}).catch(err => {
+				return res.status(500).send({ message: err.message })
+			})
+		} else {
+			return res.status(400).send({ message: "Non-empty parameters but invalid parameters. providerView should be true or undefined" })
+		}
+	} else {
+		console.log("answering for a regular user")
+		Product.findAll().then(products => {
+			return res.status(200).send({ message: "List of products", data: products})
+		}).catch(err => {
+			return res.status(500).send({ message: err.message })
+		})
+	}
 }
 
 exports.findByCat = (req, res) => {
