@@ -1,6 +1,6 @@
 <template>
 	<h1>Products list</h1>
-	<button class="add_product_button"><RouterLink class="add_product_link" v-if="user_login.isProvider" to="/new" id="new-product-link">+ Add new Product</RouterLink></button>
+	<button class="add_product_button" v-if="user_login.isProvider"><RouterLink class="add_product_link" to="/new" id="new-product-link">+ Add new Product</RouterLink></button>
 	<div class="products">
 		<ProductCard v-for="product in products" :key="product.id" :product="product"/>
 	</div>
@@ -23,6 +23,8 @@
 			})
 			.catch(error => {
 				console.log(error)
+				console.log(error.response.data)
+				console.log(error.response.status)
 			})
 	} else {
 		console.log("getting products for a provider")
@@ -34,12 +36,14 @@
 		//		console.log(error)
 		//	})
 
+		console.log("logging provider parameter")
+		console.log(user_login.value.id)
 		axios({
 			method: "get",
 			url: "http://localhost:5000/products",
-			data: {
+			params: {
 				providerView: true,
-				provider: user_login.id,
+				provider: user_login.value.id,
 				token: localStorage.getItem("user")
 			},
 		}).then(res => {
@@ -64,8 +68,9 @@
 	margin: 20px;
 	font-size: 2em;
 	background-color: lightblue;
-}
-.add_product_link {
-	color: #6904ae;
+
+	.add_product_link {
+		color: #6904ae;
+	}
 }
 </style>
