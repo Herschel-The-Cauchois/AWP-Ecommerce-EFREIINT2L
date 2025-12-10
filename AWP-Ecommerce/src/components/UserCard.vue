@@ -44,7 +44,7 @@
 	--secondary: #fa8272;
 }
 
-.product-card {
+.user-card {
 	padding: 20px;
 	width: 300px;
 	cursor: pointer;
@@ -60,7 +60,7 @@
 	}
 }
 
-.product-card button {
+.user-card button {
 	padding: 20px;
 	font-size: 1.5em;
 	color: white;
@@ -70,12 +70,12 @@
 	margin-right: 10px;
 }
 
-.product-card button:hover {
+.user-card button:hover {
 	transform: scale(1.01); 
 	box-shadow: 10px 5px 12px 0 rgba(0, 0, 0, 0.2); 
 }
 
-.product-card:hover {
+.user-card:hover {
 	transform: scale(1.01);
 	box-shadow: 10px 5px 12px 0 rgba(0, 0, 0, 0.2);
 }
