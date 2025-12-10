@@ -9,6 +9,7 @@
 </template>
 
 <script setup>
+	import axios from 'axios'
 	import { ref } from 'vue'
 	import ProductCard from '../components/ProductCard.vue'
 	import ProductService from '../services/ProductService.js'
@@ -16,13 +17,41 @@
 
 	const products = ref(null)
 
-	ProductService.getProducts()
-		.then(response => {
-			products.value = response.data.data
+	if (!user_login.value.isProvider) {
+		console.log("getting products for regular user")
+		ProductService.getProducts()
+			.then(response => {
+				products.value = response.data.data
+			})
+			.catch(error => {
+				console.log(error)
+			})
+	} else {
+		console.log("getting products for a provider")
+		//UserService.getProviderProducts()
+		//	.then(response => {
+		//		products.value = response.data.data
+		//	})
+		//	.catch(error => {
+		//		console.log(error)
+		//	})
+
+		axios({
+			method: "get",
+			url: "http://localhost:5000/products",
+			data: {
+				providerView: true,
+				provider: user_login.id,
+				token: localStorage.getItem("user")
+			},
+		}).then(res => {
+			products.value = res.data.data
+		}).catch (err => {
+		    console.error(err);
+		    console.log(err.response.data)
+		    console.log(err.response.status)
 		})
-		.catch(error => {
-			console.log(error)
-		})
+	}
 </script>
 
 <style scoped>
