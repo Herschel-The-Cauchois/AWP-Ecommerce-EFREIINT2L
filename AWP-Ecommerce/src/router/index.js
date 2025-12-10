@@ -2,7 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LogInView from '../views/LogIn.vue'
 import SignUpView from '../views/SignUp.vue'
 import MainView from '../views/Main.vue'
+import CartView from '../views/Cart.vue'
 import NewProductView from '../views/NewProduct.vue'
+import AdminView from '../views/AdminDashboard.vue'
 
 import VueJwtDecode from 'vue-jwt-decode'
 
@@ -28,6 +30,16 @@ const routes = [
         }
     },
     {
+        path: "/cart",
+        name: "cart",
+        component: CartView,
+        meta: {
+            requiresAuth : true,
+            is_admin: false,
+            is_provider: false,
+        }
+    },
+    {
         path: "/log-in",
         name: "log-in",
         component: LogInView,
@@ -44,6 +56,16 @@ const routes = [
         meta: {
             requiresAuth : false,
             is_admin: false,
+            is_provider: false
+        }
+    },
+    {
+        path: "/admin-dashboard",
+        name: "admin-dashboard",
+        component: AdminView,
+        meta: {
+            requiresAuth : true,
+            is_admin: true,
             is_provider: false
         }
     },

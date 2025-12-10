@@ -26,9 +26,17 @@ function LogOut() {
 
   <nav>
     <RouterLink to="/main" id="main-link">Home</RouterLink>
+    <template v-if="user_login.isLoggedIn">
+    | <RouterLink to="/cart" id="cart-link">Cart</RouterLink>
+    </template>
+    <template v-if="user_login.isAdmin">
+    | <RouterLink to="/admin-dashboard" id="admin-link">Admin Dashboard</RouterLink>
+    </template>
     | <RouterLink to="/log-in" id="log-in-link">Log In</RouterLink>
     | <RouterLink to="/sign-up">Sign Up</RouterLink>
-    | <button v-if="user_login.isLoggedIn" @click="LogOut">Log Out</button>
+    <template v-if="user_login.isLoggedIn">
+    | <button @click="LogOut">Log Out</button>
+    </template>
   </nav>
 
   <RouterView/> <!-- This tag indicates the spot where each view will be rendered -->
