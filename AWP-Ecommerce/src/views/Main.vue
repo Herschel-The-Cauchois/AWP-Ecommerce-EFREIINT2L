@@ -14,15 +14,11 @@
 	import ProductService from '../services/ProductService.js'
 	import {user_login} from '../login_info'
 
-	//console.log("user_login in main")
-	//console.log(user_login.value.isProvider)
 	const products = ref(null)
 
 	ProductService.getProducts()
 		.then(response => {
 			products.value = response.data.data
-			console.log("products list value")
-			console.log(products.value)
 		})
 		.catch(error => {
 			console.log(error)

@@ -25,7 +25,8 @@ function LogOut() {
   <!-- Insert Header component -->
 
   <nav>
-    <RouterLink to="/log-in" id="log-in-link">Log In</RouterLink>
+    <RouterLink to="/main" id="main-link">Home</RouterLink>
+    | <RouterLink to="/log-in" id="log-in-link">Log In</RouterLink>
     | <RouterLink to="/sign-up">Sign Up</RouterLink>
     | <button v-if="user_login.isLoggedIn" @click="LogOut">Log Out</button>
   </nav>
