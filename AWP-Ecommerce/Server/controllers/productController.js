@@ -47,13 +47,17 @@ exports.create = (req, res) => {
 }
 
 exports.findAll = (req, res) => {
-    if (req.body.providerView !== undefined & req.body.provider !== undefined) {
-        if (req.body.providerView == true) { //For their own dashboard, the providers only have access to their own product.
-            Product.findAll({ where: { provider: req.body.provider}}).then(products => {
-                return res.status(200).send({ message: "List of products", data: products})
-            }).catch(err => {
-                return res.status(500).send({ message: err.message })
-            })
+    if (req.body !== undefined) {
+        if (req.body.providerView !== undefined & req.body.provider !== undefined) {
+            if (req.body.providerView == true) { //For their own dashboard, the providers only have access to their own product.
+                Product.findAll({ where: { provider: req.body.provider}}).then(products => {
+                    return res.status(200).send({ message: "List of products", data: products})
+                }).catch(err => {
+                    return res.status(500).send({ message: err.message })
+                })
+            }
+        } else {
+            return res.status(400).send({ message: "Non-empty body but invalid parameters." })
         }
     } else {
         Product.findAll().then(products => {
