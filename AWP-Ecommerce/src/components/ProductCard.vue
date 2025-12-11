@@ -16,6 +16,7 @@
 				<button v-if="user_login.isLoggedIn" @click="addToCart">price: {{ product.price }}$</button>
 				<button v-else="user_login.isLoggedIn" @click="router.push('/log-in')">price: {{ product.price }}$</button>
 				<p class="rating"><span>Rating :</span> {{ product.rating }}/5</p>
+				<button v-if="cartView" @click="removeFromCart" class="dangerous_action">Remove from cart</button>
 			</div>
 		</div>
 		<!-- <button @click="deleteProduct">Delete</button> -->
@@ -36,6 +37,10 @@
 		product: { 
 			type: Object, 
 			required: true 
+		},
+		cartView: {
+			type: Boolean,
+			required: false
 		} 
 	})
 
@@ -60,6 +65,24 @@
 
 		axios({
 			method: "put",
+			url: "http://localhost:5000/cart",
+			data: {
+				user: user_login.value.id,
+				product: props.product.id,
+				token: localStorage.getItem("user")
+			},
+		}).then(res => {
+		    console.log(res.data);
+		}).catch (err => {
+		    console.error(err);
+		    console.log(err.response.data)
+		    console.log(err.response.status)
+		})
+	}
+
+	function removeFromCart() {
+		axios({
+			method: "delete",
 			url: "http://localhost:5000/cart",
 			data: {
 				user: user_login.value.id,
@@ -135,4 +158,7 @@ hr {
 	padding: 0.2em 0.5em;
 }
 
+button.dangerous_action {
+	background-color: red;
+}
 </style>

@@ -1,7 +1,7 @@
 <template>
 	<h1>Your cart</h1>
 	<div class="cart_products">
-		<ProductCard v-for="product in products" :key="product.id" :product="product"/>
+		<ProductCard v-for="product in products" :key="product.id" :product="product" :cartView="true"/>
 		<p v-if="products.length === 0">Nothing else to see here, you have an empty cart...</p>
 	</div>
 </template>
