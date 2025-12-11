@@ -21,6 +21,7 @@
 	import ProductCard from '../components/ProductCard.vue'
 	import ProductService from '../services/ProductService.js'
 	import {user_login} from '../login_info'
+	import {useRoute} from 'vue-router'
 
 	const products = ref(null)
 	const selected_category = ref(null)
