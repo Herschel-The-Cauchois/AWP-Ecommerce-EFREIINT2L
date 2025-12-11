@@ -1,6 +1,10 @@
 <template>
 	<h1>Products list</h1>
 
+	<label for="name">Filter by name:</label>
+
+	<input type="text" id="name-filter" v-model="name_filter" />
+
 	<label for="category-select">Filter by Category: </label>
 	<select v-model="selected_category">
 		<option value="None">Do not filter</option>
@@ -11,7 +15,7 @@
 
 	<button class="add_product_button" v-if="user_login.isProvider"><RouterLink class="add_product_link" to="/new" id="new-product-link">+ Add new Product</RouterLink></button>
 	<div class="products">
-		<ProductCard v-for="product in products" :key="product.id" :product="product"/>
+		<ProductCard v-for="product in filtered_products" :key="product.id" :product="product"/>
 	</div>
 </template>
 
@@ -22,8 +26,10 @@
 	import ProductService from '../services/ProductService.js'
 	import {user_login} from '../login_info'
 
-	const products = ref(null)
+	const fetched_products = ref(null)
+	const filtered_products = ref(null)
 	const selected_category = ref(null)
+	const name_filter = ref(null)
 
 	function loadProducts(category) {
 		if (!category) {
@@ -32,7 +38,7 @@
 				console.log("getting products for regular user")
 				ProductService.getProducts()
 					.then(response => {
-						products.value = response.data.data
+						fetched_products.value = response.data.data
 					})
 					.catch(error => {
 						console.log(error)
@@ -60,7 +66,7 @@
 						token: localStorage.getItem("user")
 					},
 				}).then(res => {
-					products.value = res.data.data
+					fetched_products.value = res.data.data
 				}).catch (err => {
 				    console.error(err);
 				    console.log(err.response.data)
@@ -74,7 +80,7 @@
 				url: "http://localhost:5000/products/" + category,
 			}).then(res => {
 				console.log(res.data)
-				products.value = res.data.data
+				fetched_products.value = res.data.data
 			}).catch (err => {
 			    console.error(err);
 			    console.log(err.response.data)
@@ -94,6 +100,20 @@
 			console.log("category is none")
 			loadProducts(false)
 		}
+	})
+
+	watch(name_filter, async (new_filter) => {
+		console.log("name filter changed!")
+		console.log(new_filter)
+		if (new_filter != "") {
+			filtered_products.value = fetched_products.value.filter((product) => product.name.substring(0, new_filter.length) == new_filter)
+		} else {
+			filtered_products.value = fetched_products.value
+		}
+	})
+
+	watch(fetched_products, async (new_fetched_products) => {
+		filtered_products.value = new_fetched_products
 	})
 </script>
 
