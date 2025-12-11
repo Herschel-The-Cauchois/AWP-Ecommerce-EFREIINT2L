@@ -63,7 +63,11 @@ function tryLog() {
         }
         localStorage.setItem("user", res.data.accessToken)
 	LoadUserLogin()
-	router.push("/main")
+    if (res.data.roles.includes("ROLE_PROVIDER")) {
+        router.push("/provider-dashboard")
+    } else {
+        router.push("/main")
+    }
     }).catch (err => {
         console.error(err);
         console.log(err.response.data)

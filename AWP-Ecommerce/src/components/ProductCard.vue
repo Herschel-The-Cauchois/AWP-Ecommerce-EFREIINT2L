@@ -14,7 +14,8 @@
 			</div>
 			<div>
 				<button v-if="user_login.isLoggedIn" @click="addToCart">price: {{ product.price }}$</button>
-				<button v-else="user_login.isLoggedIn" @click="router.push('/log-in')">price: {{ product.price }}$</button>
+				<button v-else="user_login.isLoggedIn" @click="router.push('/log-in')">price: {{ product.price }}$</button><br/>
+				<small v-if="added">Product added to cart !</small>
 				<p class="rating"><span>Rating :</span> {{ product.rating }}/5</p>
 				<button v-if="cartView" @click="removeFromCart" class="dangerous_action">Remove from cart</button>
 			</div>
@@ -25,6 +26,7 @@
 </template>
 
 <script setup>
+	import { ref } from 'vue'
 	import axios from 'axios'
 	import {user_login} from '../login_info'
 	import { useRouter } from 'vue-router'
@@ -32,6 +34,7 @@
 
 	const emit = defineEmits(['refreshProducts, refreshCart'])
 	const router = useRouter()
+	const added = ref(false)
 
 	const props = defineProps({
 		product: { 
@@ -73,7 +76,7 @@
 			},
 		}).then(res => {
 			console.log(res.data);
-			alert("Product added to cart")
+			added.value = true
 		}).catch (err => {
 			console.error(err);
 			console.log(err.response.data)
@@ -162,5 +165,9 @@ hr {
 
 button.dangerous_action {
 	background-color: red;
+}
+
+small {
+	padding-top: 2em;
 }
 </style>
