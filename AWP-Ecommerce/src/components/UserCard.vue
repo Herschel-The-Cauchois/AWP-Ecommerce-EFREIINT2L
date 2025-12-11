@@ -22,6 +22,7 @@
 	import UserService from '../services/UserService.js'
 
 	const router = useRouter()
+	const emit = defineEmits(['refreshUsers'])
 
 	const props = defineProps({
 		user: { 
@@ -41,6 +42,7 @@
 		})
 		.then(response => {
 			console.log(response.data);
+			emit('refreshUsers')
 		})
 		.catch(err => {
 			console.error(err);
@@ -60,6 +62,7 @@
 		})
 		.then(response => {
 			console.log(response.data);
+			emit('refreshUsers')
 		})
 		.catch(err => {
 			console.error(err);
@@ -82,6 +85,7 @@
 		})
 		.then(response => {
 			console.log(response.data);
+			emit('refreshUsers')
 		})
 		.catch(err => {
 			console.error(err);
