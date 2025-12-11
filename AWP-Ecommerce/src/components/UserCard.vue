@@ -119,9 +119,17 @@
 	font-size: 1.5em;
 	color: white;
 	border: none;
-	background-color: #fa8272;
 	box-shadow: 5px 5px 5px black;
-	margin-right: 10px;
+	background-color: #fa8272;
+	margin: 10px;
+}
+
+button.dangerous_action {
+	background-color: orange;
+}
+
+button.very_dangerous_action {
+	background-color: red;
 }
 
 .user-card button:hover {
@@ -132,17 +140,5 @@
 .user-card:hover {
 	transform: scale(1.01);
 	box-shadow: 10px 5px 12px 0 rgba(0, 0, 0, 0.2);
-}
-
-button {
-	margin: 10px;
-}
-
-.dangerous_action {
-	background-color: orange;
-}
-
-.very_dangerous_action {
-	background-color: red;
 }
 </style>
