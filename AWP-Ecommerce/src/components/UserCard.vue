@@ -10,6 +10,8 @@
 				<button v-if="!user.isBanned" @click="banUser"class="dangerous_action">Ban</button>
 				<button v-else="user.isBanned" @click="unbanUser" class="dangerous_action">Unban</button>
 				<button @click="deleteUser" class="very_dangerous_action">DELETE</button>
+				<button @click="promoteToProvider">Promote to Provider role</button>
+				<button @click="demoteFromProvider">Demote from Provider role</button>
 			</div>
 		</div>
 	</div>
@@ -93,6 +95,49 @@
 			console.log(err.response.status)
 		});
 
+	}
+
+	function promoteToProvider() {
+		axios({
+			method: 'report',
+			url: 'http://localhost:5000/users',
+			data: {
+				user: props.user.id,
+				grant: true,
+				token: localStorage.getItem("user")
+			}
+		})
+		.then(response => {
+			console.log(response.data);
+			alert('user promoted from Provider role to regular user')
+			emit('refreshUsers')
+		})
+		.catch(err => {
+			console.error(err);
+			console.log(err.response.data)
+			console.log(err.response.status)
+		});
+	}
+	function demoteFromProvider() {
+		axios({
+			method: 'report',
+			url: 'http://localhost:5000/users',
+			data: {
+				user: props.user.id,
+				grant: false,
+				token: localStorage.getItem("user")
+			}
+		})
+		.then(response => {
+			console.log(response.data);
+			alert('user demoted from Provider role to regular user')
+			emit('refreshUsers')
+		})
+		.catch(err => {
+			console.error(err);
+			console.log(err.response.data)
+			console.log(err.response.status)
+		});
 	}
 </script>
 
