@@ -7,6 +7,7 @@ import NewProductView from '../views/NewProduct.vue'
 import AdminView from '../views/AdminDashboard.vue'
 
 import VueJwtDecode from 'vue-jwt-decode'
+import Header from '../components/Header.vue'
 
 const routes = [
     {
@@ -72,7 +73,7 @@ const routes = [
     {
         path: "/provider-dashboard",
         name: "provider-dashboard",
-        component: SignUpView, //To replace with provider dashboard vue when done
+        component: MainView, 
         meta: {
             requiresAuth : true,
             is_admin: false,
@@ -87,6 +88,15 @@ const routes = [
             requiresAuth : true,
             is_admin: false,
             is_provider: true
+        }
+    },
+    { 
+        path: '/:pathMatch(.*)*', 
+        redirect: '/main',
+        meta: {
+            requiresAuth: false,
+            is_admin: false,
+            is_provider: false
         }
     }
 ]

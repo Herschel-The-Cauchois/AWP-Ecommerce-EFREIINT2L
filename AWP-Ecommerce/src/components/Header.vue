@@ -28,7 +28,7 @@ function LogOut() {
   if (localStorage.getItem('user') != null) {
     localStorage.removeItem("user")
     UnloadUserLogin()
-    router.push("main")
+    window.location.reload()
   }
 }
 </script>
