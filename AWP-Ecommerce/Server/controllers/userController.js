@@ -86,13 +86,13 @@ exports.logIn = (req, res) => {
 }
 
 exports.fetch = (req, res) => {
-    if (req.body === undefined) {
+    if (req.query === undefined) {
         return res.status(401).send({ message : "No credentials found." })
     }
-    if (req.body.token === undefined) {
+    if (req.query.token === undefined) {
         return res.status(401).send({ message : "No valid credentials found." })
     }
-    jwt.verify(req.body.token, config.secret, (err, decoded) => { 
+    jwt.verify(req.query.token, config.secret, (err, decoded) => { 
         if (err) { 
           return res.status(401).send({ 
             message: "Unauthorized." 
