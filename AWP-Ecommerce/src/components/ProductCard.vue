@@ -13,8 +13,14 @@
 				<p><span class="item">End :</span> {{ product.end.slice(0,10) + " " + product.end.slice(11,16) }}</p>
 			</div>
 			<div>
-				<button v-if="user_login.isLoggedIn" @click="addToCart">price: {{ product.price }}$</button>
-				<button v-else="user_login.isLoggedIn" @click="router.push('/log-in')">price: {{ product.price }}$</button><br/>
+				<template v-if="!cartView">
+					<button v-if="user_login.isLoggedIn" @click="addToCart">price: {{ product.price }}$</button>
+					<button v-else="user_login.isLoggedIn" @click="router.push('/log-in')">price: {{ product.price }}$</button><br/>
+				</template>
+				<template v-else="cartView">
+					<button v-if="user_login.isLoggedIn">price: {{ product.price }}$</button>
+					<button v-else="user_login.isLoggedIn" >price: {{ product.price }}$</button><br/>
+				</template>
 				<small v-if="added">Product added to cart !</small>
 				<p class="rating"><span>Rating :</span> {{ product.rating }}/5</p>
 				<button v-if="cartView" @click="removeFromCart" class="dangerous_action">Remove from cart</button>
