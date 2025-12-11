@@ -1,13 +1,15 @@
 <template>
 	<h1>Products list</h1>
 
-	<label for="category-select">Filter by Category: </label>
-	<select v-model="selected_category">
-		<option value="None">Do not filter</option>
-		<option>Event</option>
-		<option>Food</option>
-		<option>Rex</option>
-	</select>
+	<article>
+		<label for="category-select">Filter by Category :</label>
+		<select v-model="selected_category">
+			<option value="None">Do not filter</option>
+			<option>Event</option>
+			<option>Food</option>
+			<option>Rex</option>
+		</select>
+	</article>
 
 	<button class="add_product_button" v-if="user_login.isProvider"><RouterLink class="add_product_link" to="/new" id="new-product-link">+ Add new Product</RouterLink></button>
 	<div class="products">
@@ -115,4 +117,24 @@
 		color: #6904ae;
 	}
 }
+
+article {
+	padding: 2em 0.8em;
+	color: white;
+	background-color: #89F336;
+}
+
+article > label {
+	text-decoration: underline;
+	font-weight: 650;
+}
+
+article > select {
+	text-decoration: none;
+	padding: 0.2em 0.4em;
+	margin-left: 1em;
+	border: 2px solid black;
+	border-radius: 4px;
+}
+
 </style>
