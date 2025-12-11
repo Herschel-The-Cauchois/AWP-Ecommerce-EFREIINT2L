@@ -2,9 +2,9 @@
 	<h1>Products list</h1>
 
 	<article>
-    <label for="name">Filter by name:</label>
+    	<label for="name">Filter by name:</label>
 
-	  <input type="text" id="name-filter" v-model="name_filter" />
+	  	<input type="text" id="name-filter" v-model="name_filter" />
     
 		<label for="category-select">Filter by Category :</label>
 		<select v-model="selected_category">
@@ -145,11 +145,12 @@ article {
 }
 
 article > label {
+	margin-left: 1em;
 	text-decoration: underline;
 	font-weight: 650;
 }
 
-article > select {
+article > select, article > input[type="text"] {
 	text-decoration: none;
 	padding: 0.2em 0.4em;
 	margin-left: 1em;
