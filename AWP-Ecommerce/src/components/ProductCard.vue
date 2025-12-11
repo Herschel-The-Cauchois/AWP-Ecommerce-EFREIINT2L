@@ -72,11 +72,12 @@
 				token: localStorage.getItem("user")
 			},
 		}).then(res => {
-		    console.log(res.data);
+			console.log(res.data);
+			alert("Product added to cart")
 		}).catch (err => {
-		    console.error(err);
-		    console.log(err.response.data)
-		    console.log(err.response.status)
+			console.error(err);
+			console.log(err.response.data)
+			console.log(err.response.status)
 		})
 	}
 
