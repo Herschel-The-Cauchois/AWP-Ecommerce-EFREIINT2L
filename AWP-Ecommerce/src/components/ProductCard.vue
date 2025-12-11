@@ -30,7 +30,7 @@
 	import { useRouter } from 'vue-router'
 	import UserService from '../services/UserService.js'
 
-	//const emit = defineEmits(['deleteProduct'])
+	const emit = defineEmits(['refreshProducts, refreshCart'])
 	const router = useRouter()
 
 	const props = defineProps({
@@ -90,11 +90,12 @@
 				token: localStorage.getItem("user")
 			},
 		}).then(res => {
-		    console.log(res.data);
+			console.log(res.data);
+			emit('refreshCart')
 		}).catch (err => {
-		    console.error(err);
-		    console.log(err.response.data)
-		    console.log(err.response.status)
+			console.error(err);
+			console.log(err.response.data)
+			console.log(err.response.status)
 		})
 	}
 </script>
