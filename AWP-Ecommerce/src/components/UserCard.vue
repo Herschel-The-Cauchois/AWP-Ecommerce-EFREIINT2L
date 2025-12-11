@@ -7,8 +7,9 @@
 		<hr />
 		<div class="bottom">
 			<div>
-				<button v-if="!user.isBanned" @click="banUser">Ban</button>
-				<button v-else="user.isBanned" @click="unbanUser">Unban</button>
+				<button v-if="!user.isBanned" @click="banUser"class="dangerous_action">Ban</button>
+				<button v-else="user.isBanned" @click="unbanUser" class="dangerous_action">Unban</button>
+				<button @click="deleteUser" class="very_dangerous_action">DELETE</button>
 			</div>
 		</div>
 	</div>
@@ -30,11 +31,64 @@
 	})
 
 	function banUser() {
-		console.log("user has been naughty, hitting them with the good old ban hammer")
+		axios({
+			method: 'lock',
+			url: 'http://localhost:5000/users',
+			data: {
+				user: props.user.id,
+				token: localStorage.getItem("user")
+			}
+		})
+		.then(response => {
+			console.log(response.data);
+		})
+		.catch(err => {
+			console.error(err);
+			console.log(err.response.data)
+			console.log(err.response.status)
+		});
 	}
 
 	function unbanUser() {
-		console.log("user has been behaving nicely after all, lifting ban")
+		axios({
+			method: 'unlock',
+			url: 'http://localhost:5000/users',
+			data: {
+				user: props.user.id,
+				token: localStorage.getItem("user")
+			}
+		})
+		.then(response => {
+			console.log(response.data);
+		})
+		.catch(err => {
+			console.error(err);
+			console.log(err.response.data)
+			console.log(err.response.status)
+		});
+
+	}
+
+	function deleteUser() {
+		// we should ask for confirmation with a popup before deleting
+
+		axios({
+			method: 'delete',
+			url: 'http://localhost:5000/users',
+			data: {
+				user: props.user.id,
+				token: localStorage.getItem("user")
+			}
+		})
+		.then(response => {
+			console.log(response.data);
+		})
+		.catch(err => {
+			console.error(err);
+			console.log(err.response.data)
+			console.log(err.response.status)
+		});
+
 	}
 </script>
 
@@ -78,5 +132,17 @@
 .product-card:hover {
 	transform: scale(1.01);
 	box-shadow: 10px 5px 12px 0 rgba(0, 0, 0, 0.2);
+}
+
+button {
+	margin: 10px;
+}
+
+.dangerous_action {
+	background-color: orange;
+}
+
+.very_dangerous_action {
+	background-color: red;
 }
 </style>
