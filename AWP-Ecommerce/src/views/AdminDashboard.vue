@@ -2,6 +2,7 @@
 	<h1>Admin Dashboard</h1>
 	<div class="users">
 		<UserCard v-for="user in users" :key="user.id" :user="user"/>
+		<p v-if="users.length === 0">Nothing else to see here, you have an empty user list...</p>
 	</div>
 </template>
 
@@ -34,5 +35,11 @@
 </script>
 
 <style scoped>
+
+.users {
+	margin: 0 auto;
+	display: block;
+	max-width: 22em;
+}
 
 </style>

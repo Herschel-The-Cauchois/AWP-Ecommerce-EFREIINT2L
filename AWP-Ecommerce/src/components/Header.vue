@@ -7,8 +7,10 @@
 
         <nav>
             <RouterLink to="/main" id="main-link">Home</RouterLink>
-            <RouterLink to="/log-in" id="log-in-link">Log In</RouterLink>
-            <RouterLink to="/sign-up">Sign Up</RouterLink>
+            <RouterLink to="/log-in" id="log-in-link" v-if="!user_login.isLoggedIn">Log In</RouterLink>
+            <RouterLink to="/sign-up" v-if="!user_login.isLoggedIn">Sign Up</RouterLink>
+            <RouterLink to="/cart" v-if="user_login.isLoggedIn">Cart</RouterLink>
+            <RouterLink to="/admin-dashboard" v-if="user_login.isAdmin">Dashboard</RouterLink>
             <button v-if="user_login.isLoggedIn" @click="LogOut">Log Out</button>
         </nav>
 
